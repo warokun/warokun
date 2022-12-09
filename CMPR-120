@@ -1,0 +1,326 @@
+// Name: Andrewdai Truong
+// Date: 12/9/22
+// Description: This program will allow you to play a word guessing game.
+
+#include <iostream>
+#include <ctime>
+#include <cctype>
+#include <cstring>
+#include <fstream>
+#include <vector>
+#include "input.h"
+using namespace std;
+
+// Function prototypes
+bool checkConsonantAndVowel(char userInput, int options);
+char mainMenuOption();
+void  subMenuOptions(vector<string> vPuzzles);
+void readFileIntoArray(vector <string>& vpuzzles);
+
+
+int main()
+{
+	vector<string> vPuzzles;
+	do
+	{
+		switch (toupper(mainMenuOption())) // toupper return low case to upper case
+		{
+		case 'X': return 0;
+		case 'R': system("cls");
+		{
+			readFileIntoArray(vPuzzles);
+			system("cls");
+		}
+		break;
+		case 'S': system("cls");
+		{
+			subMenuOptions(vPuzzles);
+
+		}
+		break;
+
+		}
+	} while (true);
+
+	return 0;
+}
+
+// Main menu option
+char mainMenuOption()
+{
+
+	cout << "\n                               .?                         ? .";
+	cout << "\n                           .????.           ???           .????.";
+	cout << "\n                        .????.           ?????????           .????.";
+	cout << "\n                     .????.            ???       ???            .????.";
+	cout << "\n                  .????.              ????       ????              .????.";
+	cout << "\n               .????.                  ??       ???                  .????.";
+	cout << "\n            .????.                            ????                       .????.";
+	cout << "\n         .????.                             ???                             .????.";
+	cout << "\n            .????.                         ???                           .????.";
+	cout << "\n               .????.                      ???                        .????.";
+	cout << "\n                  .????.                   ???                     .????.";
+	cout << "\n                     .????.                ???                  .????.";
+	cout << "\n                        .????.                               .????.";
+	cout << "\n                           .????.          ???            .????.";
+	cout << "\n                               .?          ???            ?.";
+
+	cout << "\n\t\t\t\t      What are you ?";
+
+	cout << "\n\tCMPR120 Exam 3A : C - string array or string object by Andrewdai Truong (12 - 9 - 2022)" << '\n';
+	cout << "\t" << string(88, char(205)) << '\n';
+	cout << "\t\tR. Randomly choose a word from the PUZZLES.TXT file" << '\n';
+	cout << "\t\tS. Solve Implementation" << '\n';
+	cout << "\t" << string(88, char(196)) << '\n';
+	cout << "\t\tX. Exit the program" << '\n';
+	cout << "\t" << string(88, char(205)) << '\n';
+
+	return inputChar("\t\tOption: ", static_cast<string>("RSX"));
+}
+
+// Sub menu option
+void subMenuOptions(vector<string> vPuzzles)
+{
+
+
+	srand(time(0));
+
+
+	char puzzle[80];
+	if (vPuzzles.empty())
+	{
+		strcpy_s(puzzle, 80, "please input file");
+	}
+	else
+	{
+		int randomIndex = rand() % vPuzzles.size();
+
+		const char* randomword = vPuzzles[randomIndex].c_str();
+		strcpy_s(puzzle, 80, randomword);
+	}
+	// get the puzzle from the text file randomly
+	for (int i = 0; puzzle[i] != '\0'; i++)
+		cout << puzzle[i];
+	char guessing[80];
+
+	char hint[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	strcpy_s(guessing, puzzle);
+	for (int i = 0; i < strlen(guessing); i++)
+		if (isalpha(guessing[i]))
+			guessing[i] = '?';
+
+
+	do
+	{
+		system("cls");
+		cout << "Guessing: " << guessing << '\n';
+		cout << "Hint: " << hint << '\n';
+
+		cout << "\n\t\tGame Menu Options (String object Implementation)" << '\n';
+		cout << "\t" << string(70, char(205)) << '\n';
+		cout << "\t\t1. Request a consonant\n";
+		cout << "\t\t2. Request a vowel\n";
+		cout << "\t\t3. Solve\n";
+		cout << "\t" << string(70, char(196)) << '\n';
+		cout << "\t\t0. return\n";
+		cout << "\t" << string(70, char(205)) << '\n';
+		int flag = 0;
+		int option = inputInteger("\nOption: ", 0, 3);
+		switch (option)
+		{
+		case 1:
+		{
+			char letter;
+
+			cout << "\nEnter a letter: ";
+			cin >> letter;
+
+			if (!checkConsonantAndVowel(letter, option))
+			{
+
+				cout << "ERROR-2: Invalid input. Must be a character from the list of ''B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', or 'Z'.";
+				system("pause");
+				break;
+			}
+
+			cin.clear();
+			cin.ignore(999, '\n');
+
+			if (isalpha(letter))
+			{
+
+				for (int i = 0; i < strlen(hint); i++)
+					if (toupper(letter) == hint[i])
+					{
+						hint[i] = ' ';
+						flag = 1;
+					}
+				if (flag == 0)
+				{
+					cout << "\n\t the word '" << letter << "' is already found";
+					system("pause");
+					break;
+				}
+
+				for (int i = 0; i < strlen(puzzle); i++)
+					if (letter == puzzle[i])
+					{
+						guessing[i] = letter;
+						cout << "\n\t the word '" << letter << "' is  found" << '\n';
+						system("pause");
+						cout << "\n";
+					}
+
+				cout << "Guessing: " << guessing << '\n';
+				cout << "Hint: " << hint << '\n';
+			}
+			if (letter == '.')
+				break;
+
+		}
+		break;
+		case 2:
+		{
+			char letter;
+
+			cout << "\nEnter a letter: ";
+			cin >> letter;
+
+			if (!checkConsonantAndVowel(letter, option))
+			{
+
+				cout << "ERROR-2: Invalid input. Must be a character from the list of ''A', 'E', 'I', 'O', or 'U'.";
+				system("pause");
+				break;
+			}
+			cin.clear();
+			cin.ignore(999, '\n');
+
+			if (isalpha(letter))
+			{
+
+				for (int i = 0; i < strlen(hint); i++)
+					if (toupper(letter) == hint[i])
+					{
+						hint[i] = ' ';
+						flag = 1;
+					}
+				if (flag == 0)
+				{
+					cout << "\n\t the word '" << letter << "' is already found";
+					system("pause");
+					break;
+				}
+
+				for (int i = 0; i < strlen(puzzle); i++)
+					if (letter == puzzle[i])
+					{
+						guessing[i] = letter;
+						cout << "\n\t the word '" << letter << "' is  found" << '\n';
+						system("pause");
+						cout << "\n";
+					}
+
+				cout << "Guessing: " << guessing << '\n';
+				cout << "Hint: " << hint << '\n';
+			}
+			if (letter == '.')
+				break;
+		}
+		case 3:
+		{
+			cout << "\nDo you want to solve?";
+			char input;
+			cin >> input;
+			cin.clear();
+			cin.ignore(999, '\n');
+
+			if (toupper(input) == 'Y')
+			{
+				char answer[80];
+				cout << "Your answer? ";
+				cin.getline(answer, 80);
+
+				if (strcmp(answer, puzzle) == 0)
+				{
+					cout << "\nCorrect!\n";
+
+					system("pause");
+					break;
+				}
+				else
+				{
+					cout << "\nIncorrect!\n";
+					system("pause");
+					continue;
+				}
+			}
+		}
+		break;
+		case 0: system("cls"); return;
+
+			break;
+		}
+
+	} while (true);
+}
+
+
+void readFileIntoArray(vector<string>& vPuzzles)
+{
+	//reads the file
+	ifstream infile;
+	
+	//input filename so that it shows
+	string filename = inputString("\tEnter a text file name (PUZZLES.TXT): ", true);
+
+	infile.open(filename);
+
+	//file error if file does not work.
+	if (infile.fail())
+	{
+		cout << "\n\tERROR: File, " << filename << ", does not exist.\n" << '\n';
+		system("pause"); return;
+	}
+
+	string word;
+
+	//end of file
+	while (!infile.eof())
+	{
+		//grabs words that includes spaces
+		getline(infile, word);
+
+		vPuzzles.push_back(word);
+	}
+
+	infile.close();
+	cout << "\n\tData from file, " << filename << ", has been random choose.\n";
+
+	system("pause");
+
+}
+
+bool checkConsonantAndVowel(char userInput, int options)
+{
+	int flag = 0;
+
+	switch (tolower(userInput))
+	{
+	case 'e':
+	case 'u':
+	case 'o':
+	case 'a':
+	case 'i':
+		flag = 0;
+		break;
+	default:
+		flag = 1;
+	}
+	if (options == 1 && flag == 1)
+		return true;
+	else if (options == 2 && flag == 0)
+		return true;
+	else
+		return false;
+}
